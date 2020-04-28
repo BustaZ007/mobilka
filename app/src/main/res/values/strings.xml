@@ -6,5 +6,8 @@
     <string name="lupa">LuPa</string>
     <string name="cancel">Cancel</string>
     <string name="fire">Fire</string>
+    <string name="login_head">Sign in</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
     <string name="dialog_fire_missiles">Жми агонь и не паникуй</string>
 </resources>
