@@ -1,13 +1,32 @@
 <resources>
-    <string name="app_name">My Application</string>
-    <string name="delete">Delete</string>
-    <string name="Write">write</string>
-    <string name="pupa">PuPa</string>
-    <string name="lupa">LuPa</string>
+    <string name="app_name">Pokedex</string>
+    <string name="all_pokemons">All pokemons</string>
+    <string name="all_categories">Categories of
+        pokemons </string>
     <string name="cancel">Cancel</string>
     <string name="fire">Fire</string>
     <string name="login_head">Sign in</string>
     <string name="login">Login</string>
     <string name="password">Password</string>
-    <string name="dialog_fire_missiles">Жми агонь и не паникуй</string>
+    <string name="back">Back</string>
+    <string name="logo">logo</string>
+    <string name="settings">Settings</string>
+    <string name="quit_program">quit_program</string>
+    <string name="settings_description">Эта программа занимает достаточно мало места в памяти телефона,
+        засчет того, что все данные о покемонах берутся в реальном времени с ресурса www.pokemon.com,
+        но нужно понимать, что за бесперебойную работу этого ресурса создатель приложения, естественно,
+        не отвечает. Поэтому ниже представлены настройки, позволяющие избежать ситуации, когда приложение
+        недееспособно из-за неполадок на сервере или отсутствия у вас интернета. Так же включение функции
+        кэширования позволет приложению работать быстрее, за счет загрузки данных из локальных источников.</string>
+    <string name="cache_one_pokemon">Кэшировать каждого просматриваемого покемона</string>
+    <string name="cache_all_pokemons">Закэшировать всех покемонов</string>
+    <string name="clear_cache">Очистить весь кэш</string>
+    <string name="close">Close</string>
+    <string name="ok">OK</string>
+    <string name="picachoo">Picachoo</string>
+    <string name="pokemonlogo">pokemonLogo</string>
+    <string name="info">info</string>
+    <string name="pokemon_image">PokemonImage</string>
+    <string name="abilities">Abilities:</string>
+    <string name="categories">Categories:</string>
 </resources>
