@@ -7,57 +7,96 @@
     android:background="@color/main_back_color"
     tools:context=".AllPokemons">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="340dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:fontFamily="@font/pokemon_solid"
-        android:text="@string/all_pokemons"
-        android:textAlignment="center"
-        android:textColor="@color/main_color"
-        android:textSize="36sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="360dp"
         android:layout_height="0dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/backOfAllPoke"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/backOfAllPoke"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:contentDescription="@string/back"
+                android:focusableInTouchMode="false"
+                android:keepScreenOn="false"
+                app:srcCompat="@drawable/back"
+                tools:ignore="VectorDrawableCompat" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="340dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pokemon_solid"
+                android:text="@string/all_pokemons"
+                android:textAlignment="center"
+                android:textColor="@color/main_color"
+                android:textSize="36sp" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider5"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/main_color" />
+
+        <LinearLayout
+            android:id="@+id/problem"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="30dp"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="match_parent"
+                android:layout_height="328dp"
+                android:contentDescription="@string/problem"
+                app:srcCompat="@drawable/problem" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pokemon_solid"
+                android:text="@string/problem"
+                android:textAlignment="center"
+                android:textColor="@color/main_color"
+                android:textSize="32sp" />
+
+            <ImageView
+                android:id="@+id/reload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:contentDescription="@string/back"
+                android:focusableInTouchMode="false"
+                android:keepScreenOn="false"
+                app:srcCompat="@drawable/reload"
+                tools:ignore="VectorDrawableCompat" />
+        </LinearLayout>
 
         <ListView
             android:id="@+id/lvMain"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1">
+
+        </ListView>
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/backOfAllPoke"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="30dp"
-        android:fontFamily="@font/pokemon_solid"
-        android:text="@string/back"
-        android:textAlignment="center"
-        android:textColor="@color/main_color"
-        android:textSize="30sp"
-        app:cornerRadius="15dp"
-        app:iconTint="@color/main_color"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:rippleColor="@color/main_color"
-        app:strokeColor="@color/main_color" />
 </androidx.constraintlayout.widget.ConstraintLayout>

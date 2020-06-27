@@ -14,11 +14,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class PokeAdapter extends BaseAdapter {
-    Context ctx;
-    LayoutInflater lInflater;
-    ArrayList<SimplePokemon> pokemons;
-    ImageLoader imageLoader  = ImageLoader.getInstance();
-    ArrayList<Integer> missPoke = new ArrayList<>();
+    private Context ctx;
+    private LayoutInflater lInflater;
+    private ArrayList<SimplePokemon> pokemons;
+    private ImageLoader imageLoader  = ImageLoader.getInstance();
+    private ArrayList<Integer> missPoke = new ArrayList<>();
 
     PokeAdapter(Context context, ArrayList<SimplePokemon> pokemons) {
         ctx = context;
@@ -60,7 +60,7 @@ public class PokeAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.minNameOfPokemon)).setText(p.getName().toUpperCase());
         String text =  "#" + String.valueOf(position + 1001).substring(1);
         ((TextView) view.findViewById(R.id.idTextPokemon)).setText(text);
-        ImageView img = ((ImageView) view.findViewById(R.id.ivImage));
+        ImageView img = view.findViewById(R.id.ivImage);
         if(!p.getImg().equals("")){
             Log.println(Log.ERROR,"IMG",p.getName() + " " + p.getImg());
             imageLoader.displayImage("assets://" +(position + 1)+".png", img);

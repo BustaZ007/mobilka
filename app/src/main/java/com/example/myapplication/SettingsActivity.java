@@ -6,11 +6,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Switch;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button cancel, ok;
+    ImageView ok;
     Switch cachePokemon;
     SharedPreferences sPref;
 
@@ -20,11 +21,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        cancel = (Button)findViewById(R.id.cancelSettings);
-        cancel.setOnClickListener(this);
-        ok = (Button)findViewById(R.id.saveSettings);
+        ok = findViewById(R.id.saveSettings);
         ok.setOnClickListener(this);
-        cachePokemon = (Switch)findViewById(R.id.cacheAnyPokemon);
+        cachePokemon = findViewById(R.id.cacheAnyPokemon);
         sPref = getPreferences(MODE_PRIVATE);
         boolean cache = sPref.getBoolean(CACHE_POKEMON, false);
         cachePokemon.setChecked(cache);
@@ -33,9 +32,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case (R.id.cancelSettings):
-                this.finish();
-                break;
             case (R.id.saveSettings):
                 saveSettings();
                 this.finish();

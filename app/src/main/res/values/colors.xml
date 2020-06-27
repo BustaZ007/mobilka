@@ -7,5 +7,6 @@
     <color name="pupa">#c3ffab</color>
     <color name="white">#FFFFFF</color>
     <color name="main_color">#101483</color>
-    <color name="main_back_color">#5648DA</color>
+    <color name="main_back_color">#7E72F3</color>
+    <color name="back_btn_color">#66463BAC</color>
 </resources>

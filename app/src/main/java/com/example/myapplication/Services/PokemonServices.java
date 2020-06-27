@@ -36,7 +36,7 @@ public class PokemonServices extends AsyncTask<String, Void, JSONObject> {
 
     public ArrayList<SimplePokemon> getSimplePoke() throws ExecutionException, InterruptedException, JSONException {
         ArrayList<SimplePokemon> pokemons = new ArrayList<>();
-        String allPoke = "https://pokeapi.co/api/v2/pokemon/?offset=0&limit=964";
+        String allPoke = "https://pokeapi.co/api/v2/pokemon/?offset=0&limit=800";
         JSONObject js = this.execute(allPoke).get();
         JSONArray pokeJSArray = js.getJSONArray("results");
         for (int i = 0; i < pokeJSArray.length(); i++){

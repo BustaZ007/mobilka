@@ -15,9 +15,9 @@ import java.util.ArrayList;
 
 public class SimpleListAdapter extends BaseAdapter {
 
-    ArrayList<String> abilities;
-    LayoutInflater lInflater;
-    Context context;
+    private ArrayList<String> abilities;
+    private LayoutInflater lInflater;
+    private Context context;
     public SimpleListAdapter(Context context, ArrayList<String> abilities){
         this.context = context;
         this.abilities = abilities;

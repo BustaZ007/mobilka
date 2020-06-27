@@ -29,4 +29,6 @@
     <string name="pokemon_image">PokemonImage</string>
     <string name="abilities">Abilities:</string>
     <string name="categories">Categories:</string>
+    <string name="problem">Oooops!
+        Check your connection or tray again later.</string>
 </resources>
