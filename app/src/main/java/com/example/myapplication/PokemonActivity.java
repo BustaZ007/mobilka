@@ -3,8 +3,14 @@ package com.example.myapplication;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +21,10 @@ import android.widget.TextView;
 import com.example.myapplication.Models.Pokemon;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class PokemonActivity extends AppCompatActivity implements View.OnClickListener {
@@ -23,8 +32,8 @@ public class PokemonActivity extends AppCompatActivity implements View.OnClickLi
     TextView pokemonName, pokemonHeight, pokemonWeight;
     LinearLayout pokemonAbilities, pokemonCategories;
     ImageView pokemonImage, back;
-    ImageLoader imageLoader  = ImageLoader.getInstance();
     LayoutInflater inflater;
+    private ImageLoader imageLoader  = ImageLoader.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +51,14 @@ public class PokemonActivity extends AppCompatActivity implements View.OnClickLi
         back.setOnClickListener(this);
         imageLoader.init(ImageLoaderConfiguration.createDefault(getApplicationContext()));
         assert pokemon != null;
-        setPokemonImage(pokemon.getImg());
+        if(pokemon.getLocalImg() == "" || !(new File(pokemon.getLocalImg())).exists()) {
+            loadImage(pokemon.getRemoteImg());
+            Log.println(Log.ERROR,"IMAGE_SOURCE", "NETWORK");
+        }
+        else {
+            loadImage("file://" + pokemon.getLocalImg());
+            Log.println(Log.ERROR,"IMAGE_SOURCE", "STORAGE");
+        }
         pokemonName.setText(pokemon.getName());
         pokemonHeight.setText("Height: " + pokemon.getHeight());
         pokemonWeight.setText("Weight: " + pokemon.getWeight());
@@ -50,7 +66,7 @@ public class PokemonActivity extends AppCompatActivity implements View.OnClickLi
         setListViewHeightBasedOnChildren(pokemonCategories, pokemon.getCategories());
     }
 
-    private void setPokemonImage(String uri){
+    private void loadImage(String uri){
         imageLoader.displayImage(uri, pokemonImage);
     }
 
@@ -63,12 +79,6 @@ public class PokemonActivity extends AppCompatActivity implements View.OnClickLi
             View vi = inflater.inflate(R.layout.abilities_item, null);
             ((Button)vi.findViewById(R.id.item)).setText(data.get(i));
             listView.addView(vi);
-//            ##cb7f07 - back
-//            #ac678f
-//            #487549
-//            #00a900
-//            #9a4832
-
         }
     }
 }

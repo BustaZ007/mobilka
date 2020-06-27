@@ -1,15 +1,23 @@
 package com.example.myapplication.Services;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 
+import com.example.myapplication.DBHelper;
 import com.example.myapplication.Models.Pokemon;
 import com.example.myapplication.Models.SimplePokemon;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,21 +25,14 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 public class PokemonServices extends AsyncTask<String, Void, JSONObject> {
+    private DBHelper dbHelper;
 
-    public ArrayList<Pokemon> getAllPoke() throws ExecutionException, InterruptedException, JSONException {
-        ArrayList<Pokemon> pokemons = new ArrayList<>();
-        String allPoke = "https://pokeapi.co/api/v2/pokemon/?offset=0&limit=964";
-        JSONObject js = this.execute(allPoke).get();
-
-        JSONArray pokeJSArray = js.getJSONArray("results");
-        for (int i = 0; i < pokeJSArray.length(); i++){
-            String url = pokeJSArray.getJSONObject(i).getString("url");
-//            pokemons.add(getOnePoke(url));
-        }
-        return pokemons;
+    public PokemonServices(Context context){
+        dbHelper = new DBHelper(context);
     }
 
     public ArrayList<SimplePokemon> getSimplePoke() throws ExecutionException, InterruptedException, JSONException {
@@ -46,28 +47,85 @@ public class PokemonServices extends AsyncTask<String, Void, JSONObject> {
         return pokemons;
     }
 
-    public Pokemon getOnePoke(int id) throws ExecutionException, InterruptedException, JSONException {
-        String url = "https://pokeapi.co/api/v2/pokemon/" + id;
-        JSONObject js = this.execute(url).get();
-        String name = js.getString("name");
-        String img = "https://pokeres.bastionbot.org/images/pokemon/" +id+".png";
-        Double height = js.getDouble("height");
-        Double weight = js.getDouble("weight");
-        ArrayList<String> categories = new ArrayList<>();
-        JSONArray catJS = js.getJSONArray("types");
-        for (int i = 0; i < catJS.length(); i++){
-            categories.add(catJS.getJSONObject(i).getJSONObject("type").getString("name"));
+    public Pokemon getOnePoke(int id, boolean cache) throws ExecutionException, InterruptedException, JSONException{
+        String name,abilitiesStr, categoriesStr, url,query, localImg, remoteImg;
+        double height, weight;
+
+        ArrayList<String> categories, abilities;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        query = "SELECT * " +
+                "FROM allpokemons WHERE id =?;";
+        Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(id)});
+
+        if(cursor.moveToFirst()) {
+            name = cursor.getString(cursor.getColumnIndex("name"));
+            height = cursor.getDouble(cursor.getColumnIndex("height"));
+            weight = cursor.getDouble(cursor.getColumnIndex("weight"));
+            abilitiesStr = cursor.getString(cursor.getColumnIndex("abilities"));
+            categoriesStr = cursor.getString(cursor.getColumnIndex("categories"));
+            abilities = new ArrayList<>(Arrays.asList(abilitiesStr.split(";")));
+            categories = new ArrayList<>(Arrays.asList(categoriesStr.split(";")));
+            localImg = cursor.getString(cursor.getColumnIndex("image"));
+            remoteImg = "https://pokeres.bastionbot.org/images/pokemon/" +id+".png";
+            if(!(new File(localImg)).exists()){
+                new DownloadServices().execute("https://pokeres.bastionbot.org/images/pokemon/" +id+".png",+id +".png");
+            }
+            Log.println(Log.ERROR, "LOAD_POKEMON_INFO","On SQLite");
         }
-        ArrayList<String> abilities = new ArrayList<>();
-        JSONArray abilJS = js.getJSONArray("abilities");
-        for (int i = 0; i < abilJS.length(); i++){
-            Log.println(Log.ERROR, "ABILITY",abilJS.getJSONObject(i).toString());
-            abilities.add(abilJS.getJSONObject(i).getJSONObject("ability").getString("name"));
+        else {
+            cursor.close();
+            url = "https://pokeapi.co/api/v2/pokemon/" + id;
+            JSONObject js = this.execute(url).get();
+            name = js.getString("name");
+            remoteImg = "https://pokeres.bastionbot.org/images/pokemon/" +id+".png";
+            localImg = "";
+            height = js.getDouble("height");
+            weight = js.getDouble("weight");
+            categories = new ArrayList<>();
+            JSONArray catJS = js.getJSONArray("types");
+            for (int i = 0; i < catJS.length(); i++){
+                categories.add(catJS.getJSONObject(i).getJSONObject("type").getString("name"));
+            }
+            abilities = new ArrayList<>();
+            JSONArray abilJS = js.getJSONArray("abilities");
+            for (int i = 0; i < abilJS.length(); i++){
+                abilities.add(abilJS.getJSONObject(i).getJSONObject("ability").getString("name"));
+            }
+            Log.println(Log.ERROR, "LOAD_POKEMON_INFO","On ethernet");
+            Log.println(Log.ERROR, "CACHE", String.valueOf(cache));
+            if(cache){
+                new DownloadServices().execute("https://pokeres.bastionbot.org/images/pokemon/" +id+".png",+id +".png");
+                localImg = Environment.getExternalStorageDirectory().getPath() + "/pokemons/"+id +".png";
+                savePokemon(id,name,height,weight, localImg,abilities,categories, db);
+            }
         }
-        return new Pokemon(name, img, height, weight, categories,abilities);
+        return new Pokemon(name, localImg, remoteImg, height, weight, categories,abilities);
     }
 
-    protected static String readAll(Reader bufferedReader) throws IOException {
+    private void savePokemon(int id, String name, Double height, Double weight, String image,
+                             ArrayList<String> abilities, ArrayList<String> categories, SQLiteDatabase db){
+        ContentValues cv = new ContentValues();
+        cv.put("id", id);
+        cv.put("name", name);
+        cv.put("height", height);
+        cv.put("weight", weight);
+        cv.put("image", image);
+        cv.put("abilities", getStringOfList(abilities));
+        cv.put("categories", getStringOfList(categories));
+        db.insert("allpokemons", null, cv);
+        Log.println(Log.ERROR,"SAVE","OK_SAVE");
+    }
+    private String getStringOfList(ArrayList<String> list){
+        StringBuilder sb = new StringBuilder();
+        for (String str: list) {
+            sb.append(str);
+            sb.append(';');
+        }
+        sb.delete(sb.length() - 1, sb.length() - 1);
+        return sb.toString();
+    }
+
+    private String readAll(Reader bufferedReader) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         int currentChar;
         while ((currentChar = bufferedReader.read()) != -1) {
@@ -77,7 +135,7 @@ public class PokemonServices extends AsyncTask<String, Void, JSONObject> {
         return stringBuilder.toString();
     }
 
-    public static JSONObject readJsonFromUrl(String url) {
+    private JSONObject readJsonFromUrl(String url) {
         JSONObject json = null;
 
         try (InputStream inputStream = new URL(url).openStream()) {
@@ -92,17 +150,11 @@ public class PokemonServices extends AsyncTask<String, Void, JSONObject> {
     }
     @Override
     protected JSONObject doInBackground(String... arg) {
-        JSONObject res = readJsonFromUrl(arg[0]);
-        return res;
+        return readJsonFromUrl(arg[0]);
     }
 
     @Override
     protected void onPostExecute(JSONObject json) {
-        try {
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }

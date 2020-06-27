@@ -24,7 +24,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         ok = findViewById(R.id.saveSettings);
         ok.setOnClickListener(this);
         cachePokemon = findViewById(R.id.cacheAnyPokemon);
-        sPref = getPreferences(MODE_PRIVATE);
+        sPref = getSharedPreferences("cache_pref",MODE_PRIVATE);
         boolean cache = sPref.getBoolean(CACHE_POKEMON, false);
         cachePokemon.setChecked(cache);
     }
@@ -40,7 +40,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void saveSettings(){
-        sPref = getPreferences(MODE_PRIVATE);
+        sPref = getSharedPreferences("cache_pref", MODE_PRIVATE);
         SharedPreferences.Editor ed = sPref.edit();
         ed.putBoolean(CACHE_POKEMON, cachePokemon.isChecked());
         ed.apply();
